@@ -25,6 +25,7 @@ public class MigrateRepoCommandArgs : CommandArgs
     public string GithubOrg { get; set; }
     public string GithubRepo { get; set; }
     public string GithubApiUrl { get; set; }
+    public string GithubGQLUrl { get; set; }
     [Secret]
     public string GithubPat { get; set; }
     public bool QueueOnly { get; set; }

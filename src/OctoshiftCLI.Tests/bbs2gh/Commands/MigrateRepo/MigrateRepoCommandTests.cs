@@ -56,7 +56,7 @@ public class MigrateRepoCommandTests
         var command = new MigrateRepoCommand();
         command.Should().NotBeNull();
         command.Name.Should().Be("migrate-repo");
-        command.Options.Count.Should().Be(30);
+        command.Options.Count.Should().Be(32);
 
         TestHelpers.VerifyCommandOption(command.Options, "bbs-server-url", true);
         TestHelpers.VerifyCommandOption(command.Options, "bbs-project", true);
@@ -74,6 +74,8 @@ public class MigrateRepoCommandTests
         TestHelpers.VerifyCommandOption(command.Options, "github-org", false);
         TestHelpers.VerifyCommandOption(command.Options, "github-repo", false);
         TestHelpers.VerifyCommandOption(command.Options, "github-pat", false);
+        TestHelpers.VerifyCommandOption(command.Options, "github-api-url", false);
+        TestHelpers.VerifyCommandOption(command.Options, "github-graphql-url", false);
         TestHelpers.VerifyCommandOption(command.Options, "archive-download-host", false);
         TestHelpers.VerifyCommandOption(command.Options, "ssh-user", false);
         TestHelpers.VerifyCommandOption(command.Options, "ssh-private-key", false);
@@ -187,7 +189,7 @@ public class MigrateRepoCommandTests
         // Assert
         handler.Should().NotBeNull();
 
-        _mockGithubApiFactory.Verify(m => m.Create(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _mockGithubApiFactory.Verify(m => m.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         _mockBbsApiFactory.Verify(m => m.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
         _mockBbsArchiveDownloaderFactory.Verify(m => m.CreateSshDownloader(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         _mockBbsArchiveDownloaderFactory.Verify(m => m.CreateSmbDownloader(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -211,7 +213,7 @@ public class MigrateRepoCommandTests
         // Assert
         handler.Should().NotBeNull();
 
-        _mockGithubApiFactory.Verify(m => m.Create(null, GITHUB_PAT));
+        _mockGithubApiFactory.Verify(m => m.Create(null, GITHUB_PAT, null));
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using OctoshiftCLI.Contracts;
 using OctoshiftCLI.Services;
@@ -25,11 +26,11 @@ public class GithubApiFactory : ITargetGithubApiFactory
         _versionProvider = versionProvider;
     }
 
-    public virtual GithubApi Create(string apiUrl = null, string targetPersonalAccessToken = null)
+    public virtual GithubApi Create(string apiUrl = null, string targetPersonalAccessToken = null, string gqlUrl = null)
     {
         apiUrl ??= DEFAULT_API_URL;
         targetPersonalAccessToken ??= _environmentVariableProvider.TargetGithubPersonalAccessToken();
         var githubClient = new GithubClient(_octoLogger, _client, _versionProvider, _retryPolicy, _dateTimeProvider, targetPersonalAccessToken);
-        return new GithubApi(githubClient, apiUrl, _retryPolicy);
+        return string.IsNullOrEmpty(gqlUrl) ? new GithubApi(githubClient, apiUrl, _retryPolicy) : new GithubApi(githubClient, apiUrl, gqlUrl, _retryPolicy);
     }
 }

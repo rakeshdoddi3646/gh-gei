@@ -41,7 +41,7 @@ public class GrantMigratorRoleCommandBaseTests
 
         _command.BuildHandler(args, _serviceProvider);
 
-        _mockGithubApiFactory.Verify(m => m.Create(It.IsAny<string>(), githubPat));
+        _mockGithubApiFactory.Verify(m => m.Create(It.IsAny<string>(), githubPat, null));
     }
 
     [Fact]
@@ -59,6 +59,6 @@ public class GrantMigratorRoleCommandBaseTests
 
         _command.BuildHandler(args, _serviceProvider);
 
-        _mockGithubApiFactory.Verify(m => m.Create(ghesApiUrl, null));
+        _mockGithubApiFactory.Verify(m => m.Create(ghesApiUrl, null, null));
     }
 }

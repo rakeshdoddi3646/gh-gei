@@ -16,12 +16,21 @@ public class GithubApi
     private readonly GithubClient _client;
     private readonly string _apiUrl;
     private readonly RetryPolicy _retryPolicy;
+    private readonly string _graphqlApiUrl;
 
     public GithubApi(GithubClient client, string apiUrl, RetryPolicy retryPolicy)
     {
         _client = client;
         _apiUrl = apiUrl;
         _retryPolicy = retryPolicy;
+    }
+
+    public GithubApi(GithubClient client, string apiUrl, string graphqlApiUrl, RetryPolicy retryPolicy)
+    {
+        _client = client;
+        _apiUrl = apiUrl;
+        _retryPolicy = retryPolicy;
+        _graphqlApiUrl = graphqlApiUrl;
     }
 
     public virtual async Task AddAutoLink(string org, string repo, string keyPrefix, string urlTemplate)
@@ -106,7 +115,7 @@ public class GithubApi
 
     public virtual async Task<string> GetLoginName()
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var payload = new
         {
@@ -202,7 +211,7 @@ public class GithubApi
 
     public virtual async Task<string> GetOrganizationId(string org)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var payload = new
         {
@@ -227,7 +236,7 @@ public class GithubApi
 
     public virtual async Task<string> GetEnterpriseId(string enterpriseName)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var payload = new
         {
@@ -252,7 +261,7 @@ public class GithubApi
 
     public virtual async Task<string> CreateAdoMigrationSource(string orgId, string adoServerUrl)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "mutation createMigrationSource($name: String!, $url: String!, $ownerId: ID!, $type: MigrationSourceType!)";
         var gql = "createMigrationSource(input: {name: $name, url: $url, ownerId: $ownerId, type: $type}) { migrationSource { id, name, url, type } }";
@@ -278,7 +287,7 @@ public class GithubApi
 
     public virtual async Task<string> CreateBbsMigrationSource(string orgId)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "mutation createMigrationSource($name: String!, $url: String!, $ownerId: ID!, $type: MigrationSourceType!)";
         var gql = "createMigrationSource(input: {name: $name, url: $url, ownerId: $ownerId, type: $type}) { migrationSource { id, name, url, type } }";
@@ -302,7 +311,7 @@ public class GithubApi
 
     public virtual async Task<string> CreateGhecMigrationSource(string orgId)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "mutation createMigrationSource($name: String!, $url: String!, $ownerId: ID!, $type: MigrationSourceType!)";
         var gql = "createMigrationSource(input: {name: $name, url: $url, ownerId: $ownerId, type: $type}) { migrationSource { id, name, url, type } }";
@@ -326,7 +335,7 @@ public class GithubApi
 
     public virtual async Task<string> StartMigration(string migrationSourceId, string sourceRepoUrl, string orgId, string repo, string sourceToken, string targetToken, string gitArchiveUrl = null, string metadataArchiveUrl = null, bool skipReleases = false, string targetRepoVisibility = null, bool lockSource = false)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = @"
                 mutation startRepositoryMigration(
@@ -401,7 +410,7 @@ public class GithubApi
 
     public virtual async Task<string> StartOrganizationMigration(string sourceOrgUrl, string targetOrgName, string targetEnterpriseId, string sourceAccessToken)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = @"
                 mutation startOrganizationMigration (
@@ -443,7 +452,7 @@ public class GithubApi
 
     public virtual async Task<(string State, string SourceOrgUrl, string TargetOrgName, string FailureReason, int? RemainingRepositoriesCount, int? TotalRepositoriesCount)> GetOrganizationMigration(string migrationId)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "query($id: ID!)";
         var gql = "node(id: $id) { ... on OrganizationMigration { state, sourceOrgUrl, targetOrgName, failureReason, remainingRepositoriesCount, totalRepositoriesCount } }";
@@ -490,7 +499,7 @@ public class GithubApi
 
     public virtual async Task<(string State, string RepositoryName, int WarningsCount, string FailureReason, string MigrationLogUrl)> GetMigration(string migrationId)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "query($id: ID!)";
         var gql = @"
@@ -533,7 +542,7 @@ public class GithubApi
 
     public virtual async Task<(string MigrationLogUrl, string MigrationId)?> GetMigrationLogUrl(string org, string repo)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "query ($org: String!, $repo: String!)";
         var gql = @"
@@ -602,7 +611,7 @@ public class GithubApi
 
     public virtual async Task<bool> GrantMigratorRole(string org, string actor, string actorType)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "mutation grantMigratorRole ( $organizationId: ID!, $actor: String!, $actor_type: ActorType! )";
         var gql = "grantMigratorRole( input: {organizationId: $organizationId, actor: $actor, actorType: $actor_type }) { success }";
@@ -628,7 +637,7 @@ public class GithubApi
 
     public virtual async Task<bool> RevokeMigratorRole(string org, string actor, string actorType)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var query = "mutation revokeMigratorRole ( $organizationId: ID!, $actor: String!, $actor_type: ActorType! )";
         var gql = "revokeMigratorRole( input: {organizationId: $organizationId, actor: $actor, actorType: $actor_type }) { success }";
@@ -718,7 +727,7 @@ public class GithubApi
 
     public virtual async Task<IEnumerable<Mannequin>> GetMannequins(string orgId)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var payload = GetMannequinsPayload(orgId);
 
@@ -743,7 +752,7 @@ public class GithubApi
 
     public virtual async Task<IEnumerable<Mannequin>> GetMannequinsByLogin(string orgId, string login)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var payload = GetMannequinsByLoginPayload(orgId, login);
 
@@ -762,7 +771,7 @@ public class GithubApi
 
     public virtual async Task<string> GetUserId(string login)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
 
         var payload = new
         {
@@ -778,7 +787,7 @@ public class GithubApi
 
     public virtual async Task<CreateAttributionInvitationResult> CreateAttributionInvitation(string orgId, string mannequinId, string targetUserId)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
         var mutation = "mutation($orgId: ID!,$sourceId: ID!,$targetId: ID!)";
         var gql = @"
 	            createAttributionInvitation(
@@ -813,7 +822,7 @@ public class GithubApi
 
     public virtual async Task<ReattributeMannequinToUserResult> ReclaimMannequinSkipInvitation(string orgId, string mannequinId, string targetUserId)
     {
-        var url = $"{_apiUrl}/graphql";
+        var url = string.IsNullOrEmpty(_graphqlApiUrl) ? $"{_apiUrl}/graphql" : _graphqlApiUrl;
         var mutation = "mutation($orgId: ID!,$sourceId: ID!,$targetId: ID!)";
         var gql = @"
 	            reattributeMannequinToUser(

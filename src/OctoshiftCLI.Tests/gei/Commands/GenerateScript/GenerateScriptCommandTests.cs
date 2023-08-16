@@ -69,7 +69,7 @@ namespace OctoshiftCLI.Tests.GithubEnterpriseImporter.Commands.GenerateScript
 
             _ = _command.BuildHandler(args, _serviceProvider);
 
-            _mockGithubApiFactory.Verify(m => m.CreateClientNoSsl(args.GhesApiUrl, It.IsAny<string>()), Times.Once);
+            _mockGithubApiFactory.Verify(m => m.CreateClientNoSsl(args.GhesApiUrl, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -83,7 +83,7 @@ namespace OctoshiftCLI.Tests.GithubEnterpriseImporter.Commands.GenerateScript
 
             _ = _command.BuildHandler(args, _serviceProvider);
 
-            _mockGithubApiFactory.Verify(m => m.Create(It.IsAny<string>(), args.GithubSourcePat), Times.Once);
+            _mockGithubApiFactory.Verify(m => m.Create(It.IsAny<string>(), args.GithubSourcePat, It.IsAny<string>()), Times.Once);
         }
     }
 }
